@@ -37,7 +37,7 @@ func NewServer(imgPath string) *Server {
 
 func (s *Server) Run(ctx context.Context) {
 	go func() {
-		for range time.Tick(5 * time.Second) {
+		for range time.Tick(time.Second) {
 			randFile, err := getRandomFileInDir(s.imgPath)
 			if err != nil {
 				// TODO: handle errors properly
