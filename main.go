@@ -8,7 +8,6 @@ import (
 	"ogframe/frontend"
 
 	"ogframe/pkg/socket"
-	"ogframe/pkg/viewer"
 )
 
 func main() {
@@ -30,7 +29,6 @@ func run() error {
 	}
 
 	mux.Handle("/", http.FileServer(http.FS(dist)))
-	mux.Handle("/old", viewer.NewViewer("frame"))
 	mux.Handle("/socket", server)
 
 	return http.ListenAndServe(":8080", mux)
