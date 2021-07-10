@@ -1,12 +1,18 @@
 <script lang="ts">
     import {imageSrc} from "./stores";
     import {fade} from "svelte/transition";
+    import LoadingIndicator from "./LoadingIndicator.svelte";
 </script>
 
 <div>
-    {#key $imageSrc}
-        <img alt="main frame" transition:fade src={$imageSrc}>
-    {/key}
+    {#if $imageSrc !== ""}
+        {#key $imageSrc}
+            <img alt="main frame" transition:fade src={$imageSrc}>
+        {/key}
+    {:else}
+        <LoadingIndicator/>
+    {/if}
+
 </div>
 
 <style>
