@@ -20,7 +20,10 @@ func main() {
 
 func run() error {
 	router := mux.NewRouter()
-	server := socket.NewServer("./images")
+	server, err := socket.NewServer("./images")
+	if err != nil {
+		return err
+	}
 
 	dist, err := fs.Sub(frontend.Static, "dist")
 	if err != nil {

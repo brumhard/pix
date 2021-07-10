@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/base64"
 	"log"
-	"math/rand"
 	"net/http"
+	"ogframe/pkg/fileindex"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -20,11 +19,12 @@ type Server struct {
 	imgPath  string
 }
 
-func NewServer(imgPath string) *Server {
+func NewServer(imgPath string) (*Server, error) {
+
 	return &Server{
 		upgrader: &websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 256},
 		imgPath:  imgPath,
-	}
+	}, nil
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -39,8 +39,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, delay int) {
+	fi, err := fileindex.New(s.imgPath)
+	if err != nil {
+		log.Print(err)
+	}
+
 	for {
-		randFile, err := getRandomFileInDir(s.imgPath)
+		randFile, err := fi.GetRandomFile()
 		if err != nil {
 			log.Print(err)
 		}
@@ -62,27 +67,4 @@ func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, dela
 		case <-time.After(time.Duration(delay) * time.Second):
 		}
 	}
-}
-
-// getRandomFileInDir returns the full path to a random file in the dir.
-// https://stackoverflow.com/questions/45941821/how-do-you-get-full-paths-of-all-files-in-a-directory-in-go
-func getRandomFileInDir(dir string) (string, error) {
-	path, err := filepath.Abs(dir)
-	if err != nil {
-		return "", err
-	}
-
-	dirEntries, err := os.ReadDir(dir)
-	if err != nil {
-		return "", err
-	}
-
-	entry := dirEntries[rand.Intn(len(dirEntries))]
-	fullEntryPath := filepath.Join(path, entry.Name())
-
-	if entry.IsDir() {
-		return getRandomFileInDir(fullEntryPath)
-	}
-
-	return fullEntryPath, nil
 }
