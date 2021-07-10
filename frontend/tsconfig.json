@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "strict": true,
     "target": "esnext",
     "module": "esnext",
     "resolveJsonModule": true,
@@ -19,5 +20,9 @@
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.svelte"
+  ],
+  "exclude": [
+    "node_modules/*",
+    "dist"
   ]
 }
