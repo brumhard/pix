@@ -96,6 +96,7 @@ func getRandomFileInDir(dir string) (string, error) {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Print(r.URL)
 	socket, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		http.Error(w, "upgrading websocket failed", http.StatusInternalServerError)

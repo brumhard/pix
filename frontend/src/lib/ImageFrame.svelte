@@ -1,7 +1,10 @@
 <script lang="ts">
-    import {imageSrc} from "./stores";
+    import {getImageSrc} from "../store/imageSrc";
     import {fade} from "svelte/transition";
     import LoadingIndicator from "./LoadingIndicator.svelte";
+
+    export let delay: number
+    let imageSrc = getImageSrc(delay)
 </script>
 
 <div>
