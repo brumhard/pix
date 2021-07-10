@@ -26,10 +26,16 @@ type Server struct {
 }
 
 func NewServer(imgPath string) (*Server, error) {
-
 	return &Server{
-		upgrader: &websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 256},
-		imgPath:  imgPath,
+		upgrader: &websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 256,
+			CheckOrigin: func(r *http.Request) bool {
+				// TODO: remove after development is done
+				return true
+			},
+		},
+		imgPath: imgPath,
 	}, nil
 }
 
@@ -49,7 +55,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	socket, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		http.Error(w, "upgrading websocket failed", http.StatusInternalServerError)
+		// err will be promoted to client
+		log.Print(err)
 		return
 	}
 

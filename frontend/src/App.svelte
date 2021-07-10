@@ -7,8 +7,10 @@
 </script>
 
 <Router url="{url}">
-    <Route path="frame" component="{Frame}"/>
     <Route path="/">
         <Home/>
+    </Route>
+    <Route path="frame">
+        <Frame/>
     </Route>
 </Router>
