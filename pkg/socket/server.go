@@ -7,9 +7,15 @@ import (
 	"net/http"
 	"ogframe/pkg/fileindex"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
+)
+
+const (
+	delayKey     = "delay"
+	defaultDelay = 5
 )
 
 var _ http.Handler = (*Server)(nil)
@@ -29,13 +35,27 @@ func NewServer(imgPath string) (*Server, error) {
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Print(r.URL)
+
+	delay := defaultDelay
+	delayStr := r.URL.Query().Get(delayKey)
+	if delayStr != "" {
+		var err error
+		delay, err = strconv.Atoi(delayStr)
+		if err != nil {
+			http.Error(w, "expected int type as delay", http.StatusBadRequest)
+			return
+		}
+	}
+
 	socket, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		http.Error(w, "upgrading websocket failed", http.StatusInternalServerError)
 		return
 	}
 
-	s.sendImageLoop(r.Context(), socket, 4)
+	defer socket.Close()
+
+	s.sendImageLoop(r.Context(), socket, delay)
 }
 
 func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, delay int) {
@@ -58,7 +78,13 @@ func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, dela
 		str := base64.StdEncoding.EncodeToString(imgBytes)
 
 		if err := socket.WriteMessage(websocket.BinaryMessage, []byte(str)); err != nil {
+			if websocket.IsCloseError(
+				err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived,
+			) {
+				return
+			}
 			log.Print(err)
+			return
 		}
 
 		select {

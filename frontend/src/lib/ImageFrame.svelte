@@ -15,7 +15,6 @@
     {:else}
         <LoadingIndicator/>
     {/if}
-
 </div>
 
 <style>
