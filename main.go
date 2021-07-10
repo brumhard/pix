@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"io/fs"
 	"log"
 	"net/http"
@@ -22,9 +21,6 @@ func main() {
 func run() error {
 	router := mux.NewRouter()
 	server := socket.NewServer("./images")
-
-	ctx := context.Background()
-	go server.Run(ctx)
 
 	dist, err := fs.Sub(frontend.Static, "dist")
 	if err != nil {
