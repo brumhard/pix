@@ -1,13 +1,14 @@
 <script lang="ts">
-    import ImageFrame from './lib/ImageFrame.svelte'
-    import {config} from "./store/config";
+    import {Route, Router} from "svelte-routing";
+    import Home from "./routes/Home.svelte";
+    import Frame from "./routes/Frame.svelte";
 
-    $config.delay = 3;
+    export let url = "";
 </script>
 
-<main>
-    <ImageFrame delay={$config.delay}/>
-</main>
-
-<style>
-</style>
+<Router url="{url}">
+    <Route path="frame" component="{Frame}"/>
+    <Route path="/">
+        <Home/>
+    </Route>
+</Router>

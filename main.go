@@ -6,6 +6,9 @@ import (
 	"log"
 	"net/http"
 	"ogframe/frontend"
+	ownhttp "ogframe/pkg/http"
+
+	"github.com/gorilla/mux"
 
 	"ogframe/pkg/socket"
 )
@@ -17,7 +20,7 @@ func main() {
 }
 
 func run() error {
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 	server := socket.NewServer("./images")
 
 	ctx := context.Background()
@@ -28,8 +31,8 @@ func run() error {
 		return err
 	}
 
-	mux.Handle("/", http.FileServer(http.FS(dist)))
-	mux.Handle("/socket", server)
+	router.Handle("/api/socket", server)
+	router.PathPrefix("/").Handler(ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
-	return http.ListenAndServe(":8080", mux)
+	return http.ListenAndServe(":8080", router)
 }
