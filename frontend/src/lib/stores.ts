@@ -1,9 +1,9 @@
-import {readable} from 'svelte/store'
+import {readable} from "svelte/store";
 
 // TODO: check for what ; is used since it seems to work without it
 export const imageSrc = readable("", set => {
     // this function is called once, when the first subscriber to the store arrives
-    let socket = new WebSocket("ws://localhost:8080/socket")
+    let socket = new WebSocket(import.meta.env.VITE_WS_URL)
 
     socket.onclose = () => console.log("closed websocket connection")
     socket.onopen = () => console.log("opened websocket connection")
