@@ -1,9 +1,12 @@
 <script lang="ts">
     import {imageSrc} from "./stores";
+    import {fade} from "svelte/transition";
 </script>
 
 <div>
-    <img src={$imageSrc}>
+    {#key $imageSrc}
+        <img transition:fade src={$imageSrc}>
+    {/key}
 </div>
 
 <style>
@@ -23,6 +26,7 @@
         height: auto;
         max-width: 100%;
         max-height: 100%;
+        position: fixed;
     }
 
     @media (orientation: landscape) {
