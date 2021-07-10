@@ -5,7 +5,7 @@
 
 <div>
     {#key $imageSrc}
-        <img transition:fade src={$imageSrc}>
+        <img alt="main frame" transition:fade src={$imageSrc}>
     {/key}
 </div>
 
