@@ -1,9 +1,9 @@
-import {Readable, readable} from "svelte/store";
+import { Readable, readable } from "svelte/store";
 
 export const getImageSrc = (delay: number): Readable<string> => {
     return readable("", set => {
         // this function is called once, when the first subscriber to the store arrives
-        let socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?delay=${delay.toString()}`)
+        let socket = new WebSocket(`ws://${window.location.host}${import.meta.env.VITE_WS_PATH}?delay=${delay.toString()}`)
 
         socket.onmessage = (e) => {
             let reader = new FileReader()
