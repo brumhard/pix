@@ -1,7 +1,4 @@
-build-frontend-pi:
-	npm --prefix frontend run build -- --mode pi
-
-build-frontend-dev:
+build-frontend:
 	npm --prefix frontend run build
 
 build-backend:
@@ -12,11 +9,11 @@ build-backend-pi:
 
 build: build-frontend build-backend
 
-build-pi: build-frontend-pi build-backend-pi
+build-pi: build-frontend build-backend-pi
 
 deploy-pi: build-pi
 	scp ogframe_pi pi@raspberrypi:~/ogframe
 	rm ogframe_pi
 
-run: build-frontend-dev
-	go run main.go
+run: build-frontend
+	go run main.go --images images/
