@@ -1,3 +1,9 @@
+# OGFrame
+
+## TODO
+- prefetch some pictures in backend
+- check fade animation support im chromium
+- finish docs
 
 ## Autostart
 
