@@ -30,10 +30,10 @@ func NewServer(imgPath string) (*Server, error) {
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 256,
-			CheckOrigin: func(r *http.Request) bool {
-				// TODO: remove after development is done
-				return true
-			},
+			// can be enabled if backend and frontend should run in different hosts
+			// CheckOrigin: func(r *http.Request) bool {
+			// 	return true
+			// },
 		},
 		imgPath: imgPath,
 	}, nil
