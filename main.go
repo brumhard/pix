@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
+	"ogframe/frontend"
+	ownhttp "ogframe/pkg/http"
 	"ogframe/pkg/socket"
 )
 
@@ -37,13 +40,13 @@ func run() error {
 		return err
 	}
 
-	// dist, err := fs.Sub(frontend.Static, "dist")
-	// if err != nil {
-	// 	return err
-	// }
+	dist, err := fs.Sub(frontend.Static, "build/web")
+	if err != nil {
+		return err
+	}
 
 	router.Handle("/api/socket", server)
-	// router.PathPrefix("/").Handler(ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
+	router.PathPrefix("/").Handler(ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
 	log.Print("server starting")
 
