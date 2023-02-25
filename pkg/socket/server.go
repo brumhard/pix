@@ -2,7 +2,6 @@ package socket
 
 import (
 	"context"
-	"encoding/base64"
 	"log"
 	"net/http"
 	"ogframe/pkg/fileindex"
@@ -31,9 +30,9 @@ func NewServer(imgPath string) (*Server, error) {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 256,
 			// can be enabled if backend and frontend should run in different hosts
-			// CheckOrigin: func(r *http.Request) bool {
-			// 	return true
-			// },
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
 		},
 		imgPath: imgPath,
 	}, nil
@@ -82,9 +81,7 @@ func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, dela
 			log.Print(err)
 		}
 
-		str := base64.StdEncoding.EncodeToString(imgBytes)
-
-		if err := socket.WriteMessage(websocket.BinaryMessage, []byte(str)); err != nil {
+		if err := socket.WriteMessage(websocket.BinaryMessage, imgBytes); err != nil {
 			if websocket.IsCloseError(
 				err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived,
 			) {
