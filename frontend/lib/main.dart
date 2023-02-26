@@ -23,7 +23,7 @@ class SlideShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8080/api/socket'),
+      Uri.parse('ws://localhost:8888/api/socket'),
     );
 
     return Container(

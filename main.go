@@ -39,5 +39,5 @@ func run() error {
 
 	log.Print("server starting")
 
-	return http.ListenAndServe(":8080", router)
+	return http.ListenAndServe(":8888", router)
 }

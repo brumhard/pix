@@ -1,25 +1,24 @@
 version: '3'
 services:
   webdav:
-    image: bytemark/webdav
+    image: derkades/webdav
     restart: unless-stopped
     environment:
-      AUTH_TYPE: Basic
       USERNAME: testing
       PASSWORD: testing123
     volumes:
-      - ./dav:/var/lib/dav
+      - ./dav:/data
     ports:
-      - 1280:80
+      - 1180:80
   pix:
     build:
       dockerfile: Dockerfile
     image: ghcr.io/brumhard/pix:v0.1.0
     restart: unless-stopped
     volumes:
-      - ./dav:/var/lib/dav
+      - ./dav:/data
     command:
       - -images
-      - /var/lib/dav/data
+      - /data
     ports:
-      - 8081:8080
+      - 8888:8888
