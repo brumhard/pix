@@ -11,10 +11,10 @@ services:
       - ./dav:/var/lib/dav
     ports:
       - 1280:80
-  ogframe:
+  pix:
     build:
       dockerfile: Dockerfile
-    image: github.com/brumhard/ogframe-server
+    image: github.com/brumhard/pix
     restart: unless-stopped
     volumes:
       - ./dav:/var/lib/dav

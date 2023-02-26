@@ -1,4 +1,4 @@
-module ogframe
+module github.com/brumhard/pix
 
 go 1.20
 

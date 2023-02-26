@@ -4,9 +4,10 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"ogframe/pkg/imageprovider"
 	"strconv"
 	"time"
+
+	"github.com/brumhard/pix/pkg/imageprovider"
 
 	"github.com/gorilla/websocket"
 )

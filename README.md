@@ -1,51 +1,27 @@
-# OGFrame
+# Pix
+>
+> This is a personal toy project designed for my specific usecase.
 
-## TODO
-- prefetch some pictures in backend
-- check fade animation support im chromium
-- finish docs
+A server that shows off your pics collection to build an electronic photo frame with a Raspberry Pi.
 
-## Autostart
+## Run
 
-## browser ui
-https://diyprojects.io/open-html-page-starting-raspberry-pi-os-chromium-browser-full-screen-kiosk-mode/#.YRwaW1MzbLA
-
-https://2021.jackbarber.co.uk/blog/2017-02-16-hide-raspberry-pi-mouse-cursor-in-raspbian-kiosk
-
-### docker
-
-> could also use docker technically
-
-### systemd
-
-service for server:
-```ini
-[Unit]
-Description=ogframe server
-# get the correct mount target with `systemctl list-units --type=mount` if needed and replace fritznas
-After=network-online.target home-pi-fritznas.mount
-Requires=network-online.target systemd-networkd-wait-online.service home-pi-fritznas.mount 
-
-StartLimitIntervalSec=500
-StartLimitBurst=5
-
-[Service]
-Restart=on-failure
-RestartSec=5s
-
-ExecStart=/home/pi/ogframe --images "/home/pi/fritznas/TOSHIBA_EXT/Media/Fotos n Vids/Kanada 2017"
-
-[Install]
-WantedBy=multi-user.target
+```shell
+git clone github.com/brumhard/pix.git
+cd pix
+docker compose up --build
 ```
-save as `/etc/systemd/system/ogframe.service`
-run with `sudo systemctl enable ogframe`
-check status with `sudo systemctl status ogframe`
 
-## disable screensaver
+## Pi Setup
 
-https://www.raspberrypi.org/documentation/computers/configuration.html#configuring-screen-blanking
+### Browser UI
 
+<https://diyprojects.io/open-html-page-starting-raspberry-pi-os-chromium-browser-full-screen-kiosk-mode/#.YRwaW1MzbLA>
+<https://2021.jackbarber.co.uk/blog/2017-02-16-hide-raspberry-pi-mouse-cursor-in-raspbian-kiosk>
+
+### Disable screensaver
+
+<https://www.raspberrypi.org/documentation/computers/configuration.html#configuring-screen-blanking>
 
 ```shell
 sudo raspi-config
@@ -53,8 +29,7 @@ sudo raspi-config
 # > display options > screen blanking > disable
 ```
 
-
-## enable vnc server
+### Enable VNC server
 
 ```shell
 sudo raspi-config

@@ -8,9 +8,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"ogframe/frontend"
-	ownhttp "ogframe/pkg/http"
-	"ogframe/pkg/socket"
+	"github.com/brumhard/pix/frontend"
+	ownhttp "github.com/brumhard/pix/pkg/http"
+	"github.com/brumhard/pix/pkg/socket"
 )
 
 func main() {
