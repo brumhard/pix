@@ -7,9 +7,9 @@ A server that shows off your pics collection to build an electronic photo frame 
 ## Run
 
 ```shell
-git clone github.com/brumhard/pix.git
+git clone https://github.com/brumhard/pix.git
 cd pix
-docker compose up --build
+docker compose up -d
 ```
 
 ## Pi Setup

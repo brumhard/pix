@@ -14,7 +14,7 @@ services:
   pix:
     build:
       dockerfile: Dockerfile
-    image: github.com/brumhard/pix
+    image: ghcr.io/brumhard/pix:v0.1.0
     restart: unless-stopped
     volumes:
       - ./dav:/var/lib/dav
