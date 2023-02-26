@@ -4,8 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"ogframe/pkg/fileindex"
-	"os"
+	"ogframe/pkg/imageprovider"
 	"strconv"
 	"time"
 
@@ -24,7 +23,7 @@ type Server struct {
 	imgPath  string
 }
 
-func NewServer(imgPath string) (*Server, error) {
+func NewServer(imgPath string) *Server {
 	return &Server{
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
@@ -35,7 +34,7 @@ func NewServer(imgPath string) (*Server, error) {
 			},
 		},
 		imgPath: imgPath,
-	}, nil
+	}
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -65,18 +64,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) sendImageLoop(ctx context.Context, socket *websocket.Conn, delay int) {
-	fi, err := fileindex.New(s.imgPath)
+	images, err := imageprovider.Run(ctx, s.imgPath)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	for {
-		randFile, err := fi.GetRandomFile()
-		if err != nil {
-			log.Print(err)
-		}
-
-		imgBytes, err := os.ReadFile(randFile)
+		imgBytes, err := images.GetNext()
 		if err != nil {
 			log.Print(err)
 		}

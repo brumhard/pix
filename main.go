@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	"ogframe/frontend"
@@ -34,11 +33,9 @@ func run() error {
 		return errors.Wrap(err, "images argument should point to a valid path")
 	}
 
-	router := mux.NewRouter()
-	server, err := socket.NewServer(*imgPath)
-	if err != nil {
-		return err
-	}
+	router := http.NewServeMux()
+
+	server := socket.NewServer(*imgPath)
 
 	dist, err := fs.Sub(frontend.Static, "build/web")
 	if err != nil {
@@ -46,7 +43,7 @@ func run() error {
 	}
 
 	router.Handle("/api/socket", server)
-	router.PathPrefix("/").Handler(ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
+	router.Handle("/", ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
 	log.Print("server starting")
 
