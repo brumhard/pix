@@ -14,7 +14,7 @@ final _router = GoRouter(
       path: '/',
       builder: (context, state) {
         return SlideShow(
-          transitionSecondsStr: state.queryParams['transition'] ?? "500",
+          transitionSecondsStr: state.queryParams['transition'] ?? "1",
           intervalSecondsStr: state.queryParams['delay'] ?? "10",
         );
       },
