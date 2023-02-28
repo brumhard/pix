@@ -1,5 +1,5 @@
 REPO ?= ghcr.io/brumhard/pix
-TAG ?= $(shell svu n)
+TAG ?= $(shell svu minor)
 # might be necessary to run the following to enable multiarch builds
 # docker buildx create --driver docker-container --name multiarch --use
 build:
