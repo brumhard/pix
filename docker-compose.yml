@@ -1,7 +1,7 @@
 version: '3'
 services:
   webdav:
-    image: ghcr.io/brumhard/pix:v0.2.2
+    image: derkades/webdav
     restart: unless-stopped
     environment:
       USERNAME: testing
@@ -13,7 +13,7 @@ services:
   pix:
     build:
       dockerfile: Dockerfile
-    image: ghcr.io/brumhard/pix:v0.2.1
+    image: ghcr.io/brumhard/pix:v0.2.2
     restart: unless-stopped
     volumes:
       - ./dav:/data
