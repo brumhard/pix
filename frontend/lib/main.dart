@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() {
+  usePathUrlStrategy();
   runApp(const SlideShowApp());
 }
 
@@ -22,8 +24,13 @@ class SlideShow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final query = Uri.base.queryParameters;
+    final interval = query["delay"] ?? "5";
+    final animationStr = query["animation"] ?? "500";
+    final animation = int.parse(animationStr);
     final channel = WebSocketChannel.connect(
-      Uri.parse('ws://${Uri.base.host}:${Uri.base.port}/api/socket'),
+      Uri.parse(
+          'ws://${Uri.base.host}:${Uri.base.port}/api/socket?delay=$interval'),
     );
 
     return Container(
@@ -36,7 +43,7 @@ class SlideShow extends StatelessWidget {
           }
 
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
+            duration: Duration(milliseconds: animation),
             child: Image.memory(
               snapshot.data,
               // key is needed for the animatedswitcher to get that sth changed
