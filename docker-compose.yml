@@ -13,7 +13,7 @@ services:
   pix:
     build:
       dockerfile: Dockerfile
-    image: ghcr.io/brumhard/pix:v0.2.2
+    image: ghcr.io/brumhard/pix:v0.2.1
     restart: unless-stopped
     volumes:
       - ./dav:/data
