@@ -1,12 +1,12 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"io/fs"
 	"log"
 	"net/http"
-
-	"github.com/pkg/errors"
+	"net/http/pprof"
 
 	"github.com/brumhard/pix/frontend"
 	ownhttp "github.com/brumhard/pix/pkg/http"
@@ -34,6 +34,7 @@ func run() error {
 		return err
 	}
 
+	router.HandleFunc("/debug/pprof/", pprof.Index)
 	router.Handle("/api/socket", socket.NewServer(imgPath))
 	router.Handle("/", ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
