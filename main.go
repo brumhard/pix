@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/subtle"
 	"errors"
 	"flag"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
@@ -25,7 +27,9 @@ func main() {
 
 func run() error {
 	var imgPath string
+	var creds string
 	flag.StringVar(&imgPath, "images", "", "path to images to be shown on the frame")
+	flag.StringVar(&creds, "credentials", "", "comma delimited user:password for webdav server access")
 	flag.Parse()
 
 	if imgPath == "" {
@@ -46,7 +50,7 @@ func run() error {
 
 	router.HandleFunc("/debug/pprof/", pprof.Index)
 	router.Handle("/api/socket", socket.NewServer(imgPath))
-	router.Handle(webdavServer.Prefix, webdavServer)
+	router.Handle(webdavServer.Prefix, basicAuthMW(webdavServer, creds))
 	router.Handle("/", ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
 	log.Print("server starting")
@@ -57,4 +61,19 @@ func run() error {
 	<-signalc
 
 	return nil
+}
+
+func basicAuthMW(next http.Handler, credentials string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if credentials != "" {
+			user, pw, ok := r.BasicAuth()
+			providedCreds := fmt.Sprintf("%s:%s", user, pw)
+			if !ok || subtle.ConstantTimeCompare([]byte(providedCreds), []byte(credentials)) != 1 {
+				w.Header().Set("WWW-Authenticate", `Basic realm="get good in"`)
+				w.WriteHeader(401)
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
