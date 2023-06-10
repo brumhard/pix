@@ -27,7 +27,7 @@ ENV CGO_ENABLED=0
 ARG TARGETOS TARGETARCH
 ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
-COPY go.mod go.sum .
+COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/go/pkg \
     go mod download
 

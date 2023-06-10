@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/fsnotify/fsnotify"
@@ -82,8 +83,14 @@ func (ip *ImageProvider) resetFilesOnChange(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case <-ip.watcher.Events:
-		log.Println("files changed")
+	case ev := <-ip.watcher.Events:
+		if strings.HasPrefix(filepath.Base(ev.Name), ".") {
+			return nil
+		}
+		if ev.Has(fsnotify.Write) || ev.Has(fsnotify.Chmod) {
+			return nil
+		}
+		log.Println("files changed", ev.Name, "with action", ev.Op)
 	case err := <-ip.watcher.Errors:
 		log.Println("watched error: ", err)
 	}
@@ -132,6 +139,9 @@ func getFilePathsInDir(dir string) (map[string]struct{}, error) {
 	files := map[string]struct{}{}
 	for _, entry := range dirEntries {
 		fullEntryPath := filepath.Join(path, entry.Name())
+		if strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
 		if entry.IsDir() {
 			filesInDir, err := getFilePathsInDir(fullEntryPath)
 			if err != nil {

@@ -1,19 +1,9 @@
 version: '3'
 services:
-  webdav:
-    image: derkades/webdav
-    restart: unless-stopped
-    environment:
-      USERNAME: testing
-      PASSWORD: testing123
-    volumes:
-      - ./dav:/data
-    ports:
-      - 1180:80
   pix:
     build:
       dockerfile: Dockerfile
-    image: ghcr.io/brumhard/pix:v0.2.2
+    image: ghcr.io/brumhard/pix:v0.3.0
     restart: unless-stopped
     volumes:
       - ./dav:/data
@@ -21,4 +11,4 @@ services:
       - -images
       - /data
     ports:
-      - 8888:8888
+      - 8420:8420

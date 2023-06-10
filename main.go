@@ -7,10 +7,14 @@ import (
 	"log"
 	"net/http"
 	"net/http/pprof"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/brumhard/pix/frontend"
 	ownhttp "github.com/brumhard/pix/pkg/http"
 	"github.com/brumhard/pix/pkg/socket"
+	ownwebdav "github.com/brumhard/pix/pkg/webdav"
 )
 
 func main() {
@@ -34,11 +38,23 @@ func run() error {
 		return err
 	}
 
+	webdavServer, err := ownwebdav.NewServer(imgPath, "/store/")
+	if err != nil {
+		return err
+	}
+	defer webdavServer.Close()
+
 	router.HandleFunc("/debug/pprof/", pprof.Index)
 	router.Handle("/api/socket", socket.NewServer(imgPath))
+	router.Handle(webdavServer.Prefix, webdavServer)
 	router.Handle("/", ownhttp.NewSPAHandler(http.FS(dist), "index.html"))
 
 	log.Print("server starting")
+	go http.ListenAndServe(":8420", router)
 
-	return http.ListenAndServe(":8888", router)
+	signalc := make(chan os.Signal, 1)
+	signal.Notify(signalc, syscall.SIGINT, syscall.SIGTERM)
+	<-signalc
+
+	return nil
 }
